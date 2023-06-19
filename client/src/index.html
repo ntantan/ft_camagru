@@ -1,12 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-	<link rel="stylesheet" href="./css/index.css">
-    <title>Camagru</title>
-  </head>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="./css/index.css">
+		<title>Camagru</title>
+		
+	</head>
 
-  <body>
-	<h1>Hellooooo</h1>
-  </body>
+	<body>
+	<script src="./js/index.js"></script>
+
+	<main>
+		<form action="http://localhost:5000/register">
+			<div class="field">
+				<input type="email" name="email" class="input" placeholder=""/>
+				<label for="email" class="label">Email</label>
+			</div>
+			<div class="field">
+				<input type="username" name="username" class="input" placeholder=""/>
+				<label for="username" class="label">Username</label>
+			</div>
+			<div class="field">
+				<input type="password" class="input" placeholder=""/>
+				<label for="password" class="label">Password</label>
+			</div>
+			<div class="submit">
+				<input type="submit" value="submit">
+			</div>
+		</form>
+	</main>
+
+	</body>
 </html>
