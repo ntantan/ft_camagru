@@ -1,25 +1,23 @@
 const db = require('../config/db');
 
 const createTablesQuery = `
-CREATE SCHEMA IF NOT EXISTS main;
-
-CREATE TABLE IF NOT EXISTS main.users (
-	ID 			INT				NOT NULL,
-	USERNAME 	VARCHAR(50) 	NOT NULL,
-	EMAIL		VARCHAR(50) 	NOT NULL,
-	PASSWORD	VARCHAR(50) 	NOT NULL,
+CREATE TABLE IF NOT EXISTS users (
+	ID 			SERIAL			NOT NULL,
+	USERNAME 	VARCHAR(50) 	NOT NULL UNIQUE,
+	EMAIL		VARCHAR(50) 	NOT NULL UNIQUE,
+	PASSWORD	VARCHAR(200) 	NOT NULL,
 	PRIMARY KEY (ID)
 );
 
-CREATE TABLE IF NOT EXISTS main.images (
-	ID 			INT				NOT NULL,
+CREATE TABLE IF NOT EXISTS images (
+	ID 			SERIAL			NOT NULL,
 	USER_ID		INT 			NOT NULL,		
 	IMAGEURL 	VARCHAR(50) 	NOT NULL,
 	PRIMARY KEY (ID)
 );
 
-CREATE TABLE IF NOT EXISTS main.comments (
-	ID			INT				NOT NULL,
+CREATE TABLE IF NOT EXISTS comments (
+	ID			SERIAL			NOT NULL,
 	USER_ID		INT				NOT NULL,
 	IMAGE_ID	INT				NOT NULL,
 	CONTENT		TEXT			NOT NULL,
@@ -33,8 +31,6 @@ async function createTables() {
 		console.log("Tables created successfully !");
 	} catch(error) {
 		console.error("Error creating tables: ", error);
-	} finally {
-		db.$pool.end();
 	}
 }
 
