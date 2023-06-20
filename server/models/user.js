@@ -17,6 +17,10 @@ const User = {
 		return db.one('SELECT * FROM users WHERE username = $1', [username]);
 	},
 
+	getByEmail: (email) => {
+		return db.one('SELECT * FROM users WHERE email = $1', [email]);
+	},
+
 	update: (id, username, email, password) => {
 		return db.none('UPDATE users SET username = $2, email = $3, password = $4 WHERE id = $1', [id, username, email, password]);
 	},

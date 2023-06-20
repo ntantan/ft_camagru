@@ -15,11 +15,14 @@ router.post('/signup',
 		if (!validator.isEmpty()) {
 			return res.status(400).json({ message: validator.array() });
 		}
+		
 		try {
+			if (await user.getByUsername(req.body.username))
+				return res.status(400).json({ message: 'Username already exixts' });
+			if (await user.getByEmail(req.body.email))
+				return res.status(400).json({ message: 'Email already exixts' });
 			bcrypt.hash(req.body.password, 10, async function(err, hash) {
 				const result = await user.create(req.body.username, req.body.email, hash);
-				if (err)
-					throw(err);
 			})
 			console.log('User created successfully');
 			res.status(201).json({ message: 'User created successfully' });
