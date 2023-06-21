@@ -2,15 +2,12 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
 module.exports = async function (user) {
-    let testAccount = await nodemailer.createTestAccount();
 
     let transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
+        service: 'gmail',
         auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
+            user: process.env.VERIFY_EMAIL,
+            pass: process.env.VERIFY_PASS,
         },
     })
 
@@ -21,7 +18,7 @@ module.exports = async function (user) {
     );
 
     info = await transporter.sendMail({
-        from: '"ntan\'s camagru" <ntan42@proton.me>',
+        from: `${process.env.VERIFY_EMAIL}`,
         to: `${user.email}`,
         subject: 'Verify your email for your ntan\'s camagru account !',
         text: `

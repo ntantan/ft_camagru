@@ -1,11 +1,11 @@
 const pgp = require('pg-promise')();
 
 const config = {
-	host: 'database',
-	port: 5432,
-	database: 'camagru',
-	user: 'user123',
-	password: 'pass123',
+	host: process.env.POSTGRES_HOST,
+	port: process.env.POSTGRES_PORT,
+	database: process.env.POSTGRES_DB,
+	user: process.env.POSTGRES_USER,
+	password: process.env.POSTGRES_PASSWORD,
 };
 const db = pgp(config);
 

@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth');
 const { result } = require('../config/db');
+const verify = require('../middlewares/verify');
 
 router.post('/signup',
 	[body('username').isString().notEmpty(),
@@ -22,8 +23,16 @@ router.post('/signup',
 				return res.status(400).json({ message: 'Username already exixts' });
 			if (await user.getByEmail(req.body.email))
 				return res.status(400).json({ message: 'Email already exixts' });
+		} catch(error) {
+			console.log('No user found with this username or email');
+		}
+		
+		try {
 			bcrypt.hash(req.body.password, 10, async function(err, hash) {
 				const result = await user.create(req.body.username, req.body.email, hash);
+				const new_user = await user.getByUsername(req.body.username);
+				await verify(new_user);
+				console.log('Email sent!');
 			})
 			console.log('User created successfully');
 			res.status(201).json({ message: 'User created successfully' });
@@ -48,8 +57,8 @@ router.post('/login',
 			const verify = await bcrypt.compare(req.body.password, result.password);
 			if (!verify)
 				return (res.status(401).send({ message: 'Wrong username / password' }));
-			// if (!result.verified)
-			// 	return (res.status(401).send({ message: 'Account not verified'}));
+			if (!result.verified)
+				return (res.status(401).send({ message: 'Account not verified'}));
 
 			res.status(200).json({ 
 				message: 'User logged successfully',
@@ -67,12 +76,12 @@ router.post('/login',
 	}
 );
 
-router.get('/verify/:token', (req, res) => {
+router.get('/verify/:token', async (req, res) => {
 	try {
 		const {token} = req.params;	
 		const decodedToken = jwt.verify(token, 'VERIFY_SECRET');
-		const verify_user = user.getById(decodedToken.id);
-		user.update(verify_user.id, verify_user.username, verify_user.email, verify_user.password, true);
+		const verify_user = await user.getById(decodedToken.userId);
+		await user.update(verify_user.id, verify_user.username, verify_user.email, verify_user.password, true);
 		res.status(200).json({ message: 'Account verified successfully'});
 	} catch(error) {
 		res.status(401).json({ message: error.message });
